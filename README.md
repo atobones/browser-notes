@@ -27,4 +27,4 @@ To run the project, you only need a web browser.
 1. Clone the repository or download the source code.
 
 ```bash
-git clone https://github.com/your-username/browser-notes.git
+git clone https://github.com/atobones/browser-notes.git
