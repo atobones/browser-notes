@@ -1,0 +1,174 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+}
+
+.new-note {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+#note-title,
+#note-text,
+#note-category,
+#note-tags {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#add-note {
+    padding: 10px;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+    justify-content: center;
+}
+
+.controls input,
+.controls button {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.notes-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.note {
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    cursor: move;
+}
+
+.note.dragging {
+    opacity: 0.5;
+}
+
+.note.important {
+    border-color: #ff9800;
+}
+
+.note h3 {
+    margin: 0 0 10px 0;
+}
+
+.note p {
+    margin: 0 0 10px 0;
+}
+
+.note .note-category,
+.note .note-tags {
+    font-size: 0.9em;
+    color: #555;
+}
+
+.note .note-date {
+    font-size: 0.8em;
+    color: #777;
+}
+
+.note .note-actions {
+    margin-top: 10px;
+}
+
+.note .note-actions button {
+    padding: 5px 10px;
+    margin-right: 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.note .note-actions .delete {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+.note .note-actions .edit {
+    background-color: #ffc107;
+    color: #fff;
+}
+
+.note .note-actions .toggle-important {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.notification {
+    position: fixed;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px;
+    background-color: #28a745;
+    color: #fff;
+    border-radius: 5px;
+    display: none;
+    z-index: 1000;
+}
+
+/* Dark theme styles */
+body.dark {
+    background-color: #333;
+    color: #fff;
+}
+
+body.dark .container {
+    background-color: #444;
+}
+
+body.dark input,
+body.dark textarea,
+body.dark .controls input,
+body.dark .controls button {
+    background-color: #555;
+    color: #fff;
+}
+
+body.dark .note {
+    background-color: #555;
+    border-color: #888;
+}
+
+body.dark .note.important {
+    border-color: #ff9800;
+}
+
+body.dark .note .note-category,
+body.dark .note .note-tags,
+body.dark .note .note-date {
+    color: #ccc;
+}

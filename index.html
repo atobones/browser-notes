@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browser Notes</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Browser Notes</h1>
+        <div class="new-note">
+            <input type="text" id="note-title" placeholder="Note Title">
+            <textarea id="note-text" placeholder="Note Text"></textarea>
+            <input type="text" id="note-category" placeholder="Category">
+            <input type="text" id="note-tags" placeholder="Tags (comma separated)">
+            <button id="add-note">Add Note</button>
+        </div>
+        <div class="controls">
+            <input type="text" id="search-notes" placeholder="Search Notes">
+            <button id="sort-date">Sort by Date</button>
+            <button id="sort-title">Sort by Title</button>
+            <button id="sort-important">Sort by Importance</button>
+            <button id="export-notes">Export Notes</button>
+            <input type="file" id="import-notes">
+            <button id="toggle-theme">Toggle Theme</button>
+        </div>
+        <div class="notes-list">
+            <!-- Notes will be appended here -->
+        </div>
+    </div>
+    <div id="notification" class="notification"></div>
+    <script src="script.js"></script>
+</body>
+</html>
+
