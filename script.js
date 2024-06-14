@@ -20,9 +20,89 @@ class Note {
     }
 }
 
-class NoteApp {
+class NoteManager {
     constructor() {
         this.notes = JSON.parse(localStorage.getItem('notes')) || [];
+    }
+
+    addNote(title, text, category, tags) {
+        const newNote = new Note(
+            Date.now(),
+            title,
+            text,
+            category,
+            tags,
+            new Date().toLocaleString()
+        );
+        this.notes.push(newNote);
+        this.saveNotes();
+    }
+
+    updateNote(id, title, text) {
+        const note = this.notes.find(note => note.id === id);
+        if (note) {
+            note.update(title, text);
+            this.saveNotes();
+        }
+    }
+
+    deleteNote(id) {
+        this.notes = this.notes.filter(note => note.id !== id);
+        this.saveNotes();
+    }
+
+    toggleImportant(id) {
+        const note = this.notes.find(note => note.id === id);
+        if (note) {
+            note.toggleImportant();
+            this.saveNotes();
+        }
+    }
+
+    searchNotes(query) {
+        return this.notes.filter(note => 
+            note.title.toLowerCase().includes(query.toLowerCase()) || 
+            note.text.toLowerCase().includes(query.toLowerCase())
+        );
+    }
+
+    sortNotesByDate() {
+        this.notes.sort((a, b) => new Date(b.date) - new Date(a.date));
+    }
+
+    sortNotesByTitle() {
+        this.notes.sort((a, b) => a.title.localeCompare(b.title));
+    }
+
+    sortNotesByImportant() {
+        this.notes.sort((a, b) => b.important - a.important);
+    }
+
+    importNotes(importedNotes) {
+        this.notes = importedNotes.map(note => new Note(
+            note.id,
+            note.title,
+            note.text,
+            note.category,
+            note.tags,
+            note.date,
+            note.important
+        ));
+        this.saveNotes();
+    }
+
+    saveNotes() {
+        localStorage.setItem('notes', JSON.stringify(this.notes));
+    }
+
+    getNotes() {
+        return this.notes;
+    }
+}
+
+class NoteApp {
+    constructor() {
+        this.noteManager = new NoteManager();
         this.notesList = document.querySelector('.notes-list');
         this.addNoteButton = document.getElementById('add-note');
         this.noteTitleInput = document.getElementById('note-title');
@@ -63,16 +143,7 @@ class NoteApp {
         const category = this.noteCategoryInput.value.trim();
         const tags = this.noteTagsInput.value.trim().split(',').map(tag => tag.trim());
         if (title && text) {
-            const newNote = new Note(
-                Date.now(),
-                title,
-                text,
-                category,
-                tags,
-                new Date().toLocaleString()
-            );
-            this.notes.push(newNote);
-            this.saveNotes();
+            this.noteManager.addNote(title, text, category, tags);
             this.renderNotes();
             this.clearInputs();
             this.showNotification('Note added successfully!');
@@ -80,7 +151,7 @@ class NoteApp {
     }
 
     editNote(id) {
-        const note = this.notes.find(note => note.id === id);
+        const note = this.noteManager.getNotes().find(note => note.id === id);
         if (note) {
             this.noteTitleInput.value = note.title;
             this.noteTextInput.value = note.text;
@@ -93,9 +164,7 @@ class NoteApp {
         const title = this.noteTitleInput.value.trim();
         const text = this.noteTextInput.value.trim();
         if (title && text) {
-            const note = this.notes.find(note => note.id === id);
-            note.update(title, text);
-            this.saveNotes();
+            this.noteManager.updateNote(id, title, text);
             this.renderNotes();
             this.clearInputs();
             this.addNoteButton.textContent = 'Add Note';
@@ -105,65 +174,40 @@ class NoteApp {
     }
 
     deleteNote(id) {
-        this.notes = this.notes.filter(note => note.id !== id);
-        this.saveNotes();
+        this.noteManager.deleteNote(id);
         this.renderNotes();
         this.showNotification('Note deleted successfully!');
     }
 
     toggleImportant(id) {
-        const note = this.notes.find(note => note.id === id);
-        note.toggleImportant();
-        this.saveNotes();
+        this.noteManager.toggleImportant(id);
         this.renderNotes();
         this.showNotification('Note importance toggled!');
     }
 
-    saveNotes() {
-        localStorage.setItem('notes', JSON.stringify(this.notes));
-    }
-
-    showNotification(message) {
-        this.notification.textContent = message;
-        this.notification.style.display = 'block';
-        setTimeout(() => {
-            this.notification.style.display = 'none';
-        }, 3000);
-    }
-
-    clearInputs() {
-        this.noteTitleInput.value = '';
-        this.noteTextInput.value = '';
-        this.noteCategoryInput.value = '';
-        this.noteTagsInput.value = '';
-    }
-
     searchNotes() {
         const query = this.searchInput.value.toLowerCase();
-        const filteredNotes = this.notes.filter(note =>
-            note.title.toLowerCase().includes(query) ||
-            note.text.toLowerCase().includes(query)
-        );
+        const filteredNotes = this.noteManager.searchNotes(query);
         this.renderNotes(filteredNotes);
     }
 
     sortNotesByDate() {
-        this.notes.sort((a, b) => new Date(b.date) - new Date(a.date));
+        this.noteManager.sortNotesByDate();
         this.renderNotes();
     }
 
     sortNotesByTitle() {
-        this.notes.sort((a, b) => a.title.localeCompare(b.title));
+        this.noteManager.sortNotesByTitle();
         this.renderNotes();
     }
 
     sortNotesByImportant() {
-        this.notes.sort((a, b) => b.important - a.important);
+        this.noteManager.sortNotesByImportant();
         this.renderNotes();
     }
 
     exportNotes() {
-        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this.notes));
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this.noteManager.getNotes()));
         const downloadAnchorNode = document.createElement('a');
         downloadAnchorNode.setAttribute("href", dataStr);
         downloadAnchorNode.setAttribute("download", "notes.json");
@@ -179,16 +223,7 @@ class NoteApp {
             const reader = new FileReader();
             reader.onload = (e) => {
                 const importedNotes = JSON.parse(e.target.result);
-                this.notes = importedNotes.map(note => new Note(
-                    note.id,
-                    note.title,
-                    note.text,
-                    note.category,
-                    note.tags,
-                    note.date,
-                    note.important
-                ));
-                this.saveNotes();
+                this.noteManager.importNotes(importedNotes);
                 this.renderNotes();
                 this.showNotification('Notes imported successfully!');
             };
@@ -212,6 +247,7 @@ class NoteApp {
         if (event.target.classList.contains('note')) {
             event.target.classList.remove('dragging');
             this.draggedNote = null;
+            this.noteManager.saveNotes();
         }
     }
 
@@ -240,16 +276,7 @@ class NoteApp {
         }, { offset: Number.NEGATIVE_INFINITY }).element;
     }
 
-    saveOrder() {
-        const orderedNotes = [...this.notesList.querySelectorAll('.note')].map(noteElement => {
-            const id = parseInt(noteElement.dataset.id, 10);
-            return this.notes.find(note => note.id === id);
-        });
-        this.notes = orderedNotes;
-        this.saveNotes();
-    }
-
-    renderNotes(filteredNotes = this.notes) {
+    renderNotes(filteredNotes = this.noteManager.getNotes()) {
         this.notesList.innerHTML = '';
         filteredNotes.forEach(note => {
             const noteElement = document.createElement('div');
