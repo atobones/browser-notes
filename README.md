@@ -2,6 +2,8 @@
 
 Browser Notes is a web application that allows users to create, edit, delete, and manage notes directly in the browser. Each note can include a title, text, category, tags, and creation date. Users can mark notes as important, pin them to the top of the list, search, sort, and export/import notes. The application stores notes in the browser's local storage, ensuring data persistence between sessions. The application also supports light and dark themes.
 
+This project is implemented using object-oriented programming (OOP) principles in JavaScript.
+
 ## Features
 
 - **Create Notes**: Add new notes with a title, text, category, and tags.
@@ -27,4 +29,5 @@ To run the project, you only need a web browser.
 1. Clone the repository or download the source code.
 
 ```bash
-git clone https://github.com/atobones/browser-notes.git
+git clone https://github.com/your-username/browser-notes.git
+
